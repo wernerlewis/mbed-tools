@@ -27,10 +27,16 @@ normal process to make a change is as follows:
 5. Push to your fork.
 6. Submit a pull request.
 
-We will review the proposed change as soon as we can and, if needed, give feedback. Please bear in mind that the tools
-for Mbed OS are complex and cover a large number of use cases. This means we may ask for changes not only to ensure
-that the proposed change meets our quality criteria, but also to make sure the that the change is generally useful and
-doesn't impact other uses cases or maintainability.
+We will review the proposed change as soon as we can and, if needed, give
+feedback. Please bear in mind that the tools for Mbed OS are complex and cover
+a large number of use cases. This means we may ask for changes not only to
+ensure that the proposed change meets our quality criteria, but also to make
+sure the that the change is generally useful and doesn't impact other uses
+cases or harm maintainability.
+
+If you are new to developing on Python projects, you may find [our development
+tutorial](#Development-and-Testing) valuable. We cover how to get a Python
+development environment set up, how to use tox, and other tips.
 
 ### News Files
 
@@ -88,38 +94,33 @@ We recommend the following commit structure in the following order:
 1. Refactoring (no functional change)
 1. Meaningful behavioural changes
 
-Follow [this guide](https://chris.beams.io/posts/git-commit/) to ensure you're writing good commit messages.
-
-## Creating a Release
-
-To create a production release of mbed-tools, perform the following steps:
-
-1. Check out the `master` branch; ensure it is clean and up to date.
-1. Run `tox -e preprelease`, this will update the necessary files, create a commit and tag it with the new release version number.
-1. Push the commit to `master`.
-1. Push the tag.
-
-The CI will detect a new tag has been created and run the "Build and Deploy" pipeline, which then pushes the release to pyPI.
-
-> **_NOTE:_**  The release process relies on a shell script `ci_scripts/prep-release`, so will not work on Windows systems.
+Follow [Chris Beams' article on how to write a Git commit
+message](https://chris.beams.io/posts/git-commit/) to ensure you're writing
+good commit messages.
 
 ## Contribution Agreement
 
-For us to accept your code contributions, we will need you to agree to our
-[Mbed Contributor Agreement](https://os.mbed.com/contributor_agreement/) to give us the necessary rights to use and
-distribute your contributions.
+Mbed previously required a signed contributor agreement in order to accept
+contributions. Mbed no longer requires such an agreement. Mbed projects (unless
+otherwise noted in the specific project) now accept contributions under
+Apache-2.0 directly. For more details, refer to [the Mbed OS contributing
+guide](https://os.mbed.com/docs/mbed-os/latest/contributing/index.html)
 
 Thank you for contributing to `mbed-tools`.
 
 # Development and Testing
 
-For development and testing purposes, it is essential to use a virtual environment.
+For development and testing purposes, it is essential to use a virtual
+environment. tox is a commonly used development tool that helps manage virtual
+environments.
 
 ## Setup Python and tox
 
 `mbed-tools` is compatible with Python 3.6 or later.
 
-If you are on a Linux distribution, or MacOS, you will find that Python comes pre-installed on your system. **Do not use the pre-installed versions of Python for development.**
+If you are on a Linux distribution, or macOS, you will find that Python comes
+pre-installed on your system. **Do not use the pre-installed versions of Python
+for development.**
 
 Below are links to guides for correctly setting up a development ready version of Python 3 on common platforms:
 
@@ -132,7 +133,7 @@ On Windows we have also found the [Python Launcher for Windows](https://docs.pyt
 After you have set up your Python 3 installation, install tox (the `--user` flag is important **never use `sudo` to install Python packages!**)
 
 ```bash
-python(3) -m pip install --user tox
+python3 -m pip install --user tox
 ```
 
 Check that tox is in the binary path
@@ -156,7 +157,7 @@ export PATH=~/Library/Python/3.7/bin/:$PATH
 
 ## Setup Development Environment
 
-Clone the `mbed-tools` GitHub repository
+Clone the `mbed-tools` GitHub repository.
 
 ```bash
 git clone git@github.com:ARMmbed/mbed-tools.git
@@ -172,10 +173,11 @@ source .venv/bin/activate
 
 ## Unit Tests, Code Formatting and Static Analysis
 
-After you have activated your development environment, run `pre-commit` to run unit tests and static code analysis checks:
+After you have activated your development environment, run `tox -e py37` to run
+unit tests and static code analysis checks:
 
 ```bash
-pre-commit run --all-files
+tox -e py37
 ```
 
 This will run `black`, `flake8`, `mypy` and `pytest`. If you would like to run these tools individually, see below:
@@ -231,7 +233,9 @@ generate-docs
 ```
 
 This will generate the docs and output them to `local_docs`.
-This should only be a preview. Since documentation is automatically generated by the CI you shouldn't commit any docs html files manually.
+This should only be a preview. Since documentation is automatically generated
+by the CI you shouldn't commit any docs html files manually. The docs will be
+generated and checked in as part of the release process.
 
 ### Viewing docs generated by the CI
 
@@ -257,3 +261,23 @@ Plugins for various tools are also available:
   - [Atom](https://docs.codeclimate.com/docs/code-climate-atom-package)
   - [PyCharm](https://plugins.jetbrains.com/plugin/13306-code-cleaner-with-code-climate-cli)
   - [Vim](https://docs.codeclimate.com/docs/vim-plugin)
+
+## Creating a Release
+
+Production releases of mbed-tools are created automatically every night by our
+continuous delivery system (implemented in Azure Pipelines). There should be no
+human intervention required to deploy mbed-tools to pypi.
+
+If you wish to create a production release of mbed-tools without waiting for
+the continuous deployment system to create one, you can perform the following
+steps:
+
+1. Check out the `master` branch; ensure it is clean and up to date.
+1. Run `tox -e preprelease`, this will update the necessary files, create a commit and tag it with the new release version number.
+1. Push the commit to `master`.
+1. Push the tag.
+
+The CI will detect a new tag has been created and run the "Build and Deploy" pipeline, which then pushes the release to pyPI.
+
+> **_NOTE:_**  The release process relies on a shell script `ci_scripts/prep-release`, so will not work on Windows systems.
+
