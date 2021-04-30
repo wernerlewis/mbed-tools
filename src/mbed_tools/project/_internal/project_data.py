@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Optional
 
 from mbed_tools.project._internal.render_templates import (
-    render_cmakelists_template,
     render_main_cpp_template,
     render_gitignore_template,
 )
@@ -85,7 +84,6 @@ class MbedProgramFiles:
 
         app_config.write_text(json.dumps(DEFAULT_APP_CONFIG, indent=4))
         mbed_os_ref.write_text(f"{MBED_OS_REFERENCE_URL}#{MBED_OS_REFERENCE_ID}")
-        render_cmakelists_template(cmakelists_file, root_path.stem)
         render_main_cpp_template(main_cpp)
         render_gitignore_template(gitignore)
         return cls(

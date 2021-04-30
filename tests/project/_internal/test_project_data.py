@@ -32,20 +32,16 @@ class TestMbedProgramFiles:
 
         assert program.app_config_file.exists()
         assert program.mbed_os_ref.exists()
-        assert program.cmakelists_file.exists()
 
     def test_from_new_calls_render_template_for_gitignore_and_main(self, tmp_path):
         with mock.patch(
-            "mbed_tools.project._internal.project_data.render_cmakelists_template"
-        ) as render_cmakelists_template, mock.patch(
             "mbed_tools.project._internal.project_data.render_main_cpp_template"
         ) as render_main_cpp_template, mock.patch(
             "mbed_tools.project._internal.project_data.render_gitignore_template"
         ) as render_gitignore_template:
             root = pathlib.Path(tmp_path, "foo")
             root.mkdir()
-            program_files = MbedProgramFiles.from_new(root)
-            render_cmakelists_template.assert_called_once_with(program_files.cmakelists_file, "foo")
+            MbedProgramFiles.from_new(root)
             render_main_cpp_template.assert_called_once_with(root / MAIN_CPP_FILE_NAME)
             render_gitignore_template.assert_called_once_with(root / ".gitignore")
 
