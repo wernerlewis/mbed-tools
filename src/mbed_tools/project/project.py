@@ -50,6 +50,7 @@ def initialise_project(path: pathlib.Path, create_only: bool) -> None:
     if not create_only:
         libs = LibraryReferences(root=program.root, ignore_paths=["mbed-os"])
         libs.fetch()
+    program.render_cmake_template()
 
 
 def deploy_project(path: pathlib.Path, force: bool = False) -> None:

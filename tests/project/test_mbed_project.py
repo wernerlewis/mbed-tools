@@ -35,6 +35,7 @@ class TestInitialiseProject:
         initialise_project(path, create_only=False)
 
         mock_program.from_new.assert_called_once_with(path)
+        mock_program.from_new.return_value.render_cmake_template.assert_called_once()
         mock_libs().fetch.assert_called_once()
 
     def test_skips_mbed_os_when_create_only_is_true(self, mock_libs, mock_program):
@@ -42,6 +43,7 @@ class TestInitialiseProject:
         initialise_project(path, create_only=True)
 
         mock_program.from_new.assert_called_once_with(path)
+        mock_program.from_new.return_value.render_cmake_template.assert_called_once()
         mock_libs().fetch.assert_not_called()
 
 

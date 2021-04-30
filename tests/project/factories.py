@@ -36,10 +36,14 @@ def make_mbed_lib_reference(root, name="mylib.lib", resolved=False, ref_url=None
     return MbedLibReference(reference_file=ref_file, source_code_path=source_dir)
 
 
-def make_mbed_os_files(root):
+def make_mbed_os_files(root, include_template=True):
     if not root.exists():
         root.mkdir()
 
     targets_dir = root / "targets"
     targets_dir.mkdir()
     (targets_dir / "targets.json").touch()
+    if include_template:
+        template_dir = root / "tools" / "cmake"
+        template_dir.mkdir(parents=True)
+        (template_dir / "CMakeLists.tmpl").touch()

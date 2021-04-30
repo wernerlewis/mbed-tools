@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 from typing import Dict
 from urllib.parse import urlparse
+from mbed_tools.project._internal.render_templates import render_cmakelists_template
 
 from mbed_tools.project.exceptions import ProgramNotFound, ExistingProgram, MbedOSNotFound
 from mbed_tools.project._internal.project_data import (
@@ -99,6 +100,10 @@ class MbedProgram:
             )
 
         return cls(program, mbed_os)
+
+    def render_cmake_template(self) -> None:
+        """Replaces CMakeLists.txt, using the template in Mbed OS."""
+        render_cmakelists_template(self.files.cmakelists_file, self.root.name, self.mbed_os.cmake_template_file)
 
 
 def parse_url(name_or_url: str) -> Dict[str, str]:

@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 APP_CONFIG_FILE_NAME = "mbed_app.json"
 BUILD_DIR = "cmake_build"
 CMAKELISTS_FILE_NAME = "CMakeLists.txt"
+CMAKELISTS_TEMPLATE_PATH = Path("tools", "cmake", "CMakeLists.tmpl")
 MAIN_CPP_FILE_NAME = "main.cpp"
 MBED_OS_REFERENCE_FILE_NAME = "mbed-os.lib"
 MBED_OS_DIR_NAME = "mbed-os"
@@ -135,15 +136,20 @@ class MbedOS:
     Attributes:
         root: The root path of the MbedOS source tree.
         targets_json_file: Path to a targets.json file, which contains target data specific to MbedOS revision.
+        cmake_template_file: Path to a CMakeLists template file.
     """
 
     root: Path
     targets_json_file: Path
+    cmake_template_file: Optional[Path] = None
 
     @classmethod
     def from_existing(cls, root_path: Path, check_root_path_exists: bool = True) -> "MbedOS":
         """Create MbedOS from a directory containing an existing MbedOS installation."""
         targets_json_file = root_path / TARGETS_JSON_FILE_PATH
+        cmake_template_file = (
+            root_path / CMAKELISTS_TEMPLATE_PATH if (root_path / CMAKELISTS_TEMPLATE_PATH).exists() else None
+        )
 
         if check_root_path_exists and not root_path.exists():
             raise ValueError("The mbed-os directory does not exist.")
@@ -151,7 +157,7 @@ class MbedOS:
         if root_path.exists() and not targets_json_file.exists():
             raise ValueError("This MbedOS copy does not contain a targets.json file.")
 
-        return cls(root=root_path, targets_json_file=targets_json_file)
+        return cls(root=root_path, targets_json_file=targets_json_file, cmake_template_file=cmake_template_file)
 
     @classmethod
     def from_new(cls, root_path: Path) -> "MbedOS":

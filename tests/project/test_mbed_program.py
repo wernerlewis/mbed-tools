@@ -6,6 +6,7 @@ import os
 import pathlib
 import pytest
 
+from unittest import mock
 
 from mbed_tools.project import MbedProgram
 from mbed_tools.project.exceptions import ExistingProgram, ProgramNotFound, MbedOSNotFound
@@ -124,6 +125,23 @@ class TestParseURL:
         data = parse_url(url)
         assert data["url"] == url
         assert data["dst_path"] == "mbed-os-example-numskull"
+
+
+class TestProgramCMakeRender:
+    def test_cmake_template_passes_mbed_os_path(self, tmp_path):
+        with mock.patch("mbed_tools.project.mbed_program.render_cmakelists_template") as render_cmake:
+            fs_root = pathlib.Path(tmp_path, "foo")
+            mbed_os_path = fs_root / "extern" / "mbed-os"
+            mbed_os_path.mkdir(parents=True)
+            make_mbed_program_files(fs_root)
+            make_mbed_os_files(mbed_os_path)
+
+            program = MbedProgram.from_existing(fs_root, DEFAULT_BUILD_SUBDIR, mbed_os_path)
+            program.render_cmake_template()
+
+            render_cmake.assert_called_once_with(
+                program.files.cmakelists_file, "foo", mbed_os_path / "tools" / "cmake" / "CMakeLists.tmpl"
+            )
 
 
 class TestFindProgramRoot:
