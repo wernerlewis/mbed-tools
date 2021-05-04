@@ -17,17 +17,25 @@ from mbed_tools.project._internal import git_utils
 
 @click.command()
 @click.option("--create-only", "-c", is_flag=True, show_default=True, help="Create a program without fetching mbed-os.")
+@click.option(
+    "--mbed-os-path",
+    default=None,
+    type=click.Path(resolve_path=True),
+    help="Path to a local copy of Mbed OS this program will use.",
+)
 @click.argument("path", type=click.Path(resolve_path=True))
-def new(path: str, create_only: bool) -> None:
+def new(path: str, create_only: bool, mbed_os_path: str) -> None:
     """Creates a new Mbed project at the specified path. Downloads mbed-os and adds it to the project.
 
     PATH: Path to the destination directory for the project. Will be created if it does not exist.
     """
     click.echo(f"Creating a new Mbed program at path '{path}'.")
-    if not create_only:
+    if not create_only and mbed_os_path is None:
         click.echo("Downloading mbed-os and adding it to the project.")
-
-    initialise_project(pathlib.Path(path), create_only)
+    if mbed_os_path is not None:
+        initialise_project(pathlib.Path(path), True, pathlib.Path(mbed_os_path))
+    else:
+        initialise_project(pathlib.Path(path), create_only)
 
 
 @click.command()

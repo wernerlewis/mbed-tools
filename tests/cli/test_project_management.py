@@ -56,6 +56,14 @@ class TestNewCommand:
 
         assert result.output == expected
 
+    def test_calls_new_with_mbed_os_path(self, mock_initialise_project):
+        result = CliRunner().invoke(new, ["path", "--mbed-os-path", "mbed-path"])
+
+        mock_initialise_project.assert_called_once_with(
+            pathlib.Path.cwd() / "path", True, pathlib.Path.cwd() / "mbed-path"
+        )
+        assert "mbed-os and adding it to the project" not in result.output
+
 
 class TestImportCommand:
     def test_calls_clone_function_with_correct_args(self, mock_import_project):

@@ -62,7 +62,7 @@ def create_mbed_app_json(root, **kwargs):
 
 @pytest.fixture
 def program(tmp_path):
-    prog = MbedProgram.from_new(tmp_path / "test-prog")
+    prog = MbedProgram.from_new(tmp_path / "test-prog", None)
     # Overwrite the default mbed_app.json so it doesn't mess with our test env
     prog.files.app_config_file.write_text(json.dumps({"": ""}))
     # Create program mbed-os directory and fake targets.json

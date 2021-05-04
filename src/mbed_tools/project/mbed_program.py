@@ -6,7 +6,7 @@
 import logging
 
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 from urllib.parse import urlparse
 from mbed_tools.project._internal.render_templates import render_cmakelists_template
 
@@ -42,13 +42,14 @@ class MbedProgram:
         self.mbed_os = mbed_os
 
     @classmethod
-    def from_new(cls, dir_path: Path) -> "MbedProgram":
+    def from_new(cls, dir_path: Path, mbed_os_path: Optional[Path]) -> "MbedProgram":
         """Create an MbedProgram from an empty directory.
 
         Creates the directory if it doesn't exist.
 
         Args:
             dir_path: Directory in which to create the program.
+            mbed_os_path: Directory containing mbed-os if already present.
 
         Raises:
             ExistingProgram: An existing program was found in the path.
@@ -63,7 +64,10 @@ class MbedProgram:
         dir_path.mkdir(exist_ok=True)
         program_files = MbedProgramFiles.from_new(dir_path)
         logger.info(f"Creating git repository for the Mbed program '{dir_path}'")
-        mbed_os = MbedOS.from_new(dir_path / MBED_OS_DIR_NAME)
+        if mbed_os_path is not None:
+            mbed_os = MbedOS.from_existing(mbed_os_path)
+        else:
+            mbed_os = MbedOS.from_new(dir_path / MBED_OS_DIR_NAME)
         return cls(program_files, mbed_os)
 
     @classmethod

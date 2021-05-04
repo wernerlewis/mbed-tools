@@ -34,7 +34,7 @@ class TestInitialiseProject:
         path = pathlib.Path()
         initialise_project(path, create_only=False)
 
-        mock_program.from_new.assert_called_once_with(path)
+        mock_program.from_new.assert_called_once_with(path, None)
         mock_program.from_new.return_value.render_cmake_template.assert_called_once()
         mock_libs().fetch.assert_called_once()
 
@@ -42,7 +42,7 @@ class TestInitialiseProject:
         path = pathlib.Path()
         initialise_project(path, create_only=True)
 
-        mock_program.from_new.assert_called_once_with(path)
+        mock_program.from_new.assert_called_once_with(path, None)
         mock_program.from_new.return_value.render_cmake_template.assert_called_once()
         mock_libs().fetch.assert_not_called()
 
